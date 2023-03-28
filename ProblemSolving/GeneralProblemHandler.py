@@ -118,7 +118,34 @@ class GeneralProblemHandler:
                 s_str = str(sol_vec[i]).replace("**","^")
                 writeOneLineInFile(file, s_str, fileType)
                 if printOnScreen:
-                    print("Source(%d):  %s"%(i, s_str))
+                    print("Solution(%d):  %s"%(i, s_str))
+            closeFile(file)
+
+    def printAnyFieldDataInFile(self, list_tags: list, filePath: str = "", fileType: OutputFileType = OutputFileType.TEXT, simplify = False, printOnScreen: bool = False) -> None:
+        
+        num_params = self.getParametricSolCoeff()
+        for key in self.physical_models:
+            print("")
+            print("===== PRINTING VARIABLES FOR %s PHYSICAL MODEL ====="%str(key))
+            file_prefix = filePath if filePath != "" else defaultFilePath()
+            file_name = file_prefix + "MMS_Var_" + str(key) + extensionName(fileType)
+            file = openFile(file_name, fileType)
+            for tag in list_tags:
+                sol_vec = 0.0
+                if isinstance(tag, SolutionTags):
+                    sol_vec = self.physical_models[key].getSolTag(tag, num_params)
+                elif isinstance(tag, SolutionGradientTags):
+                    sol_vec = self.physical_models[key].getGradVarTag(tag, num_params, True)
+
+                if not isinstance(sol_vec, list):
+                    sol_vec = [sol_vec]
+                for i in range(len(sol_vec)):
+                    if simplify and isinstance(sol_vec[i], sp.Expr):
+                        sol_vec[i] = sp.simplify(sol_vec[i])
+                    s_str = str(sol_vec[i]).replace("**","^")
+                    writeOneLineInFile(file, s_str, fileType)
+                    if printOnScreen:
+                        print("Var(%d):  %s"%(i, s_str))
             closeFile(file)
 
     # Plotting
@@ -221,7 +248,7 @@ class GeneralProblemHandler:
             axes.legend(prop={'size': 16}, handlelength=3.5)
             axes.set_xlabel(str(sym_var[0]), size = 26)
             axes.set_ylabel(str(sym_var[1]), size = 26)
-            axes.set_zlabel('', size = 26)
+            # axes.set_zlabel('', size = 26)
 
             plt.xticks(fontsize=16)
             plt.yticks(fontsize=16)
@@ -233,7 +260,7 @@ class GeneralProblemHandler:
             format_save='png'
             # axes.view_init(elev=32., azim=-165)
             # axes.view_init(elev=27., azim=-155)
-            axes.view_init(elev=27., azim=-135)
+            # axes.view_init(elev=27., azim=-135)
             # plt.savefig(name_plot+'.'+format_save, format=format_save, dpi = 300)
             plt.show()
 

@@ -94,6 +94,11 @@ class FluidSolutionGradientTags(SolutionGradientTags):
     DIVERGENCEVEL = 18
     VISCOUSDISSIPATION = 19
     HEATFLUX_MINUS_VISCOUSDISSIPATION = 20
+    SHEARSTRESS_XX = 21
+    SHEARSTRESS_XY = 22
+    SHEARSTRESS_YY = 23
+    HEATFLUX_X = 24
+    HEATFLUX_Y = 25
 
 #* --- TAGS FOR COORDINATES SYSTEMS TYPES --- *#
 class CoordinatesSystemType(Enum):

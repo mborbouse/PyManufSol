@@ -20,16 +20,16 @@ from Outputs.PlotOverArea import *
 LowVel = True
 Stiffness = True
 pressureNormalStressDecoupled = True
-# If True, splitting #2 to be used with HLLCP multiphase Riemann solver. 
+# If splitting_2 = True, splitting #2 to be used with HLLCP multiphase Riemann solver. 
 # Additional jump on convective total energy present. But impossible to solve the problem whcih becomes way too non-linear...
 # If False, splitting #1 to be used with HLLC multiphase Riemann solver. 
 # No additional jump for total energy and problem solvable.
 splitting_2 = False 
-#! WARNING: to be consistent, we should set that True only if splitting #2 is used because this makes such that the
+#! WARNING: to be consistent, we should set pressureHeatFluxDecoupled = True only if splitting #2 is used because this makes such that the
 #!          energy jump is [q_n] - [tau*u*n] = u_gamma_t * delta tau_nt + delta q.
 # But if we set it to False, the total energy contribution is involved in the energy jump and this leads to a very harsh
 # (reaching crazy values) temperature field, thus also a super steep heat flux...
-pressureHeatFluxDecoupled = True
+pressureHeatFluxDecoupled = False
 
 # Geometry definition
 domain_dim = 2
@@ -40,11 +40,18 @@ radius = 0.25625#0.25
 
 # Reference solution values 
 
-m_dot = -0.3 # using m_dot != 0 leads to a non-solvable system...
+# m_dot = -0.3 # using m_dot != 0 leads to a non-solvable system...
+# deltaTangentStress = 0.2
+# deltaTangentVel = -0.5
+# deltaTemp = 10.0
+# heatSource = 100.0
+
+m_dot = -0.001 # using m_dot != 0 leads to a non-solvable system...
 deltaTangentStress = 0.2
-deltaTangentVel = -0.5
-deltaTemp = 10.0
-heatSource = 100.0
+deltaTangentVel = -50.0
+deltaTemp = 100.0
+heatSource = 1000.0
+
 
 p_far = 20000
 # Interfacial jumps
@@ -180,13 +187,13 @@ known_ind = [3, 4]
 # Temperatures
 temp_0 = PolarPolynomialManufSol([], sym_variables, [T_ref, 0, 0, (T_int-T_ref)/radius**3, 0], [0, 1, 2, 3, 4], 4)
 
-sym_param_T1 = sp.symbols('bT_2, bT_3, bT_4')
+sym_param_T1 = list(sp.symbols('bT_2, bT_3, bT_4'))
 temp_1 = PolarPolynomialManufSol(sym_param_T1, sym_variables, [0, 0], known_ind, 4)
 
 # Radial velocities
 u_r_0 = PolarPolynomialManufSol([], sym_variables, [u_ref, 0, 0, (u_int-u_ref)/radius**3, 0], [0, 1, 2, 3, 4], 4)
 
-sym_param_u_r_1 = sp.symbols('bU_2, bU_3, bU_4')
+sym_param_u_r_1 = list(sp.symbols('bU_2, bU_3, bU_4'))
 u_r_1 = PolarPolynomialManufSol(sym_param_u_r_1, sym_variables, [0, 0], known_ind, 4)
 
 # Tangential velocities
@@ -431,6 +438,15 @@ output_path = "/Users/henneauxd/Softwares/myMMS_Solver/Examples/SpinningBubbleWi
 my_new_problem.printMMSSourceTermInFile(output_path, OutputFileType.TEXT)
 my_new_problem.printSolutionVectorInFile([], CompressibleFlowVarSetTags.PRIMITIVE_PVT, output_path, OutputFileType.TEXT)
 
+solTags = ['P', 'u', 'v', 'T', 'rho', 'rhou', 'rhov', 'rhoE']
+gradTags = ['tau_xx', 'q_x', 'q_y', 'vorticity']
+
+tags_var_to_print = [FluidSolutionTags.PRESSURE, FluidSolutionTags.VELOCITY_X, FluidSolutionTags.VELOCITY_Y, FluidSolutionTags.TEMPERATURE,
+                     FluidSolutionTags.DENSITY, FluidSolutionTags.MOMENTUM_X, FluidSolutionTags.MOMENTUM_Y, FluidSolutionTags.RHOTOTALENERGY,
+                     FluidSolutionGradientTags.SHEARSTRESS_XX, FluidSolutionGradientTags.SHEARSTRESS_XY, 
+                     FluidSolutionGradientTags.HEATFLUX_X, FluidSolutionGradientTags.HEATFLUX_Y, FluidSolutionGradientTags.VORTICITY]
+my_new_problem.printAnyFieldDataInFile(tags_var_to_print, output_path, OutputFileType.TEXT)
+
 # Area over which to plot
 plot_area_cylind = PlotOver2DCircularAreaCenteredAtOrigin(sym_variables, [my_problem.getThisBoundary("iso0").getBoundaryGeometry()], R_far)
 
@@ -475,10 +491,10 @@ side_interface_plot[name_model_0] = -1
 side_interface_plot[name_model_1] = 1
 
 # Plot everything
-# my_problem.plotQuantitiesAlongOneDimLinesOverThisArea(quantities_plot, lines_plot, plot_area_cylind, side_interface_plot, 50, 0)
+my_problem.plotQuantitiesAlongOneDimLinesOverThisArea(quantities_plot, lines_plot, plot_area_cylind, side_interface_plot, 20, 0)
 
 # my_problem.plotQuantitiesOverThisTwoDimArea(quantities_plot, plot_area_cylind, side_interface_plot, 10)
 
 my_new_problem.plotQuantitiesOverThisTwoDimArea(quantities_plot, plot_area_cart, side_interface_plot, 20)
 
-# my_new_problem.plotQuantitiesAlongOneDimLinesOverThisArea(quantities_plot, lines_plot, plot_area_cart, side_interface_plot, 20)
+# my_new_problem.plotQuantitiesAlongOneDimLinesOverThisArea(quantities_plot, lines_plot, plot_area_cart, side_interface_plot, 20, 0)

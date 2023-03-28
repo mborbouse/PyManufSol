@@ -17,6 +17,7 @@ from Outputs.PlotOverArea import *
 #* --- 0/ DEFINITION OF PROBLEM PARAMETERS ---
 #* -------------------------------------------------------------------------- *#
 pressureNormalStressDecoupled = True
+splitting_2 = False 
 pressureHeatFluxDecoupled = False
 
 # Domain geometry
@@ -82,9 +83,12 @@ p_0_user = c_0*sp.cos(b_0*sym_variables[1])+a_0
 p_0 = UserDefinedManufSol([], sym_variables, p_0_user)
 
 p_coeff = []
-if pressureNormalStressDecoupled:
+if pressureNormalStressDecoupled and not splitting_2:
     p_coeff = [sp.symbols('bP_1')]
     p_1_user = c_1*sp.cos(b_1*sym_variables[1])+a_1+p_coeff[0]
+elif pressureNormalStressDecoupled and splitting_2:
+    p_coeff = sp.symbols('bP_1, bP_2')
+    p_1_user = c_1*sp.cos(b_1*sym_variables[1])+a_1+p_coeff[0]+p_coeff[1]*sym_variables[1]
 else:
     p_1_user = c_1*sp.cos(b_1*sym_variables[1])+a_1
 p_1 = UserDefinedManufSol(p_coeff, sym_variables, p_1_user)
@@ -194,6 +198,9 @@ u_gamma_n = u_n_ave - m_dot * overRho_ave
 u_gamma_t = 0.5 * (vel_0_t_gamma+vel_1_t_gamma)   
 if pressureHeatFluxDecoupled:
     jump_q_minus_tau = u_gamma_t * deltaTangentStress + heatSource
+    if m_dot != 0 and splitting_2:
+        jump_convective_total_energy = (-(p_0*vel_0_n_gamma-p_1*vel_1_n_gamma) + delta_p * u_gamma_n)/m_dot
+        iso0_jump.addDirichletBCAndSubsituteBoundaryEq(FluidSolutionTags.TOTALENERGY, [jump_pressure], coord_to_subsituted)
 else:
     jump_q_minus_tau = -m_dot * (E_0-E_1) - (p_0*vel_0_n_gamma-p_1*vel_1_n_gamma) + delta_p * u_gamma_n + u_gamma_t * deltaTangentStress + heatSource
 iso0_jump.addNeumannBCAndSubsituteBoundaryEq(FluidSolutionGradientTags.HEATFLUX_MINUS_VISCOUSDISSIPATION, [jump_q_minus_tau], coord_to_subsituted, ProjectionType.NORMAL)
@@ -307,4 +314,4 @@ side_interface_plot[name_model_1] = 1
 
 my_new_problem.plotQuantitiesAlongOneDimLinesOverThisArea(quantities_plot, lines_plot, plot_area_cart, side_interface_plot, 20, 1)
 
-my_new_problem.plotQuantitiesOverThisTwoDimArea(quantities_plot, plot_area_cart, side_interface_plot, 30)
+my_new_problem.plotQuantitiesOverThisTwoDimArea(quantities_plot, plot_area_cart, side_interface_plot, 20)

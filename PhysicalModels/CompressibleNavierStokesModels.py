@@ -135,6 +135,15 @@ class CompressibleNavierStokesModels(GeneralPhysicalModels):
                     if i_dim == j_dim:
                         tau[i_dim][j_dim] = tau[i_dim][j_dim] - 2./3. * mu * divVel[0][0]
             return tau
+        elif tag == fsgt.SHEARSTRESS_XX:
+            tau = self.getGradVarTag(fsgt.SHEARSTRESS, num_params, replace_params_before_deriv)
+            return tau[0][0]
+        elif tag == fsgt.SHEARSTRESS_XY:
+            tau = self.getGradVarTag(fsgt.SHEARSTRESS, num_params, replace_params_before_deriv)
+            return tau[0][1]
+        elif tag == fsgt.SHEARSTRESS_YY:
+            tau = self.getGradVarTag(fsgt.SHEARSTRESS, num_params, replace_params_before_deriv)
+            return tau[1][1]
         elif tag == fsgt.HEATFLUX:
             dT = self.getGradVarTag(fsgt.GRADT, num_params, replace_params_before_deriv)
             kappa = self.transport_prop.getThermalConductivity(self.solVector(num_params))
@@ -142,6 +151,12 @@ class CompressibleNavierStokesModels(GeneralPhysicalModels):
             for i_dim in range(self.domain_dim):
                 q[i_dim] = -kappa * dT[0][i_dim]
             return q
+        elif tag == fsgt.HEATFLUX_X:
+            q = self.getGradVarTag(fsgt.HEATFLUX, num_params, replace_params_before_deriv)
+            return q[0]
+        elif tag == fsgt.HEATFLUX_Y:
+            q = self.getGradVarTag(fsgt.HEATFLUX, num_params, replace_params_before_deriv)
+            return q[1]
         elif tag == fsgt.VISCOUSDISSIPATION:
             tau = self.getGradVarTag(fsgt.SHEARSTRESS, num_params, replace_params_before_deriv)
             vel = self.getSolTag(fst.VELOCITY_VEC, num_params)    
