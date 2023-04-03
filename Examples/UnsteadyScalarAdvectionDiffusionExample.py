@@ -59,11 +59,11 @@ print(dict_symb_sols.getDicManufSolPerPhaseAndTag())
 #* -------------------------------------------------------------------------- *#
 #* --- 2/ DEFINITION OF THE GOVERNING EQUATIONS ---
 #* -------------------------------------------------------------------------- *#
-conv_coeffs_0 = [1.0, 0.0]
-diff_coeffs_0 = [1.0, 0.0]
+conv_coeffs_0 = [1.0, 1.0]
+diff_coeffs_0 = [1.0, 1.0]
 
-conv_coeffs_1 = [1.0, 0.0]
-diff_coeffs_1 = [1.0, 0.0]
+conv_coeffs_1 = [1.0, 1.0]
+diff_coeffs_1 = [1.0, 1.0]
 
 name_model_0 = "phase0"
 eqs_0 = LinearScalarAdvectionDiffusionModels(name_model_0, manuf_sol_cont_0, domain_dim, conv_coeffs_0, diff_coeffs_0, CoordinatesSystemType.CARTESIAN)

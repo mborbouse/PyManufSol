@@ -1,23 +1,31 @@
-import sympy as sp
 
-#* 1/ Create manuf solution for each phase
-#   Inputs:
-#       - independent variables
-#       - possibly symbolic unknown parameters
-#   Outputs:
-#       - an object containing:
-#           > symbolic solutions vectors depending on indep variables 
-#             + possible unkwown parameters to be determined 
-#             => either defined by the user directly or through the use of pre-determined
-#             manuf sol shape classes
-#           > the independent variables
-#           > the unknown parameters
+# ==> See the other examples to understand how to concretely go 
+#     through the different steps below
 
+#* -------------------------------------------------------------------------- *#
+#* --- IMPORT REQUIRED MODULES ---
+#* -------------------------------------------------------------------------- *#
 
-#* 2/ Create physical model for each phase
-#   Inputs:
-#       -  object for symbolic manuf solution for this phase
-#   Outputs:
-#       -  object containing:
-#           > 
-#             
+#* -------------------------------------------------------------------------- *#
+#* --- 1/ MANUFACTURED SOLUTION ASSEMBLY ---
+#* -------------------------------------------------------------------------- *#
+
+#* -------------------------------------------------------------------------- *#
+#* --- 2/ DEFINITION OF THE GOVERNING EQUATIONS ---
+#* -------------------------------------------------------------------------- *#
+
+#* -------------------------------------------------------------------------- *#
+#* --- 3/ DEFINITION OF THE BOUNDARY AND JUMPS CONDITIONS (OPTIONAL!) ---
+#* -------------------------------------------------------------------------- *#
+
+#* -------------------------------------------------------------------------- *#
+#* --- 4/ PROBLEM HANDLING ---
+#* -------------------------------------------------------------------------- *#
+
+#* -------------------------------------------------------------------------- *#
+#* --- 5/ CHANGE OF COORDINATES SYSTEM (OPTIONAL!) ---
+#* -------------------------------------------------------------------------- *#
+
+#* -------------------------------------------------------------------------- *#
+#* --- 6/ OUTPUTS PRINTING AND PLOTS ---
+#* -------------------------------------------------------------------------- *#
