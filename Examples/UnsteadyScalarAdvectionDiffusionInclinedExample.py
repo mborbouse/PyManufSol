@@ -1,3 +1,4 @@
+import os
 import sympy as sp
 from PhysicalModels.ThermoPhysicalModels.EOS_factory import StiffenedGasEOS
 from PhysicalModels.ThermoPhysicalModels.TransportProperties_factory import ConstantFluidTransportProperty
@@ -12,6 +13,11 @@ from BoundaryConditions.GeneralBoundaryConditions import GeneralBoundaryConditio
 from Common.MMSTags import CoordinatesSystemType, OutputFileType, DefaultVarSetTags
 from ProblemSolving.GeneralProblemHandler import GeneralProblemHandler, QuantityInfoForPlot
 from Outputs.PlotOverArea import *
+import math as math
+
+current_directory = os.getcwd()
+output_folder_name = "UnsteadyScalarAdvectionDiffusionInclinedOutput/"
+output_absolute_path = os.path.join(current_directory,output_folder_name)
 
 #* -------------------------------------------------------------------------- *#
 #* --- 0/ DEFINITION OF PROBLEM PARAMETERS ---
@@ -59,10 +65,12 @@ print(dict_symb_sols.getDicManufSolPerPhaseAndTag())
 #* -------------------------------------------------------------------------- *#
 #* --- 2/ DEFINITION OF THE GOVERNING EQUATIONS ---
 #* -------------------------------------------------------------------------- *#
-conv_coeffs_0 = [1.0, 1.0]
+# conv_coeffs_0 = [1.0, 1.0]
+conv_coeffs_0 = [math.cos(15*math.pi/180), math.sin(15*math.pi/180)]
 diff_coeffs_0 = [1.0, 1.0]
 
-conv_coeffs_1 = [1.0, 1.0]
+# conv_coeffs_1 = [1.0, 1.0]
+conv_coeffs_1 = [math.cos(15*math.pi/180), math.sin(15*math.pi/180)]
 diff_coeffs_1 = [1.0, 1.0]
 
 name_model_0 = "phase0"
@@ -151,12 +159,15 @@ print("*** Phase 1 ***")
 for i in my_new_problem.getThisPhysicalModel(name_model_1).getSolVectorFromTags([],[], params_sol_new):
     print(i)
 
+print("======== Printing equation of inclined interface ========")
+print(my_new_problem.getThisBoundary("iso0").getBoundaryGeometry().getBoundaryEquation())
+
 #* -------------------------------------------------------------------------- *#
 #* --- 6/ OUTPUTS PRINTING AND PLOTS ---
 #* -------------------------------------------------------------------------- *#
 
 # Print in files
-output_path = "/Users/henneauxd/Softwares/myMMS_Solver/Examples/UnsteadyScalarAdvectionDiffusionInclinedOutput/"
+output_path = output_absolute_path
 my_new_problem.printMMSSourceTermInFile(output_path, OutputFileType.TEXT, False, True)
 my_new_problem.printSolutionVectorInFile([], DefaultVarSetTags.MYVARSETTAG, output_path)
 

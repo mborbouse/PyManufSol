@@ -102,6 +102,30 @@ class CompressibleNavierStokesModels(GeneralPhysicalModels):
                 var = self.getSolTag(fst.INTERNALENERGY, num_params) + self.getSolTag(fst.PRESSURE, num_params) / self.getSolTag(fst.DENSITY, num_params)
             elif tag == fst.TOTALENTHALPY:
                 var = self.getSolTag(fst.TOTALENERGY, num_params) + self.getSolTag(fst.PRESSURE, num_params) / self.getSolTag(fst.DENSITY, num_params)
+            elif tag == fst.CONVECTIVEFLUX_X1:
+                F_c = self.convectiveFlux(num_params)
+                var = F_c[0][0]
+            elif tag == fst.CONVECTIVEFLUX_X2:
+                F_c = self.convectiveFlux(num_params)
+                var = F_c[1][0]
+            elif tag == fst.CONVECTIVEFLUX_X3:
+                F_c = self.convectiveFlux(num_params)
+                var = F_c[2][0]
+            elif tag == fst.CONVECTIVEFLUX_X4:
+                F_c = self.convectiveFlux(num_params)
+                var = F_c[3][0]
+            elif tag == fst.CONVECTIVEFLUX_Y1:
+                F_c = self.convectiveFlux(num_params)
+                var = F_c[0][1]
+            elif tag == fst.CONVECTIVEFLUX_Y2:
+                F_c = self.convectiveFlux(num_params)
+                var = F_c[1][1]
+            elif tag == fst.CONVECTIVEFLUX_Y3:
+                F_c = self.convectiveFlux(num_params)
+                var = F_c[2][1]
+            elif tag == fst.CONVECTIVEFLUX_Y4:
+                F_c = self.convectiveFlux(num_params)
+                var = F_c[3][1]
             else:
                 raise ValueError("The solution tag is unknown.")
         return subsNumParams(var, num_params)
@@ -166,6 +190,30 @@ class CompressibleNavierStokesModels(GeneralPhysicalModels):
             q = self.getGradVarTag(fsgt.HEATFLUX, num_params, replace_params_before_deriv)
             tau_vel = self.getGradVarTag(fsgt.VISCOUSDISSIPATION, num_params, replace_params_before_deriv)
             return [a-b for a,b in zip(q,tau_vel)]
+        elif tag == fsgt.DIFFUSIVEFLUX_X1:
+            F_d = self.diffusiveFlux(num_params, replace_params_before_deriv)
+            return F_d[0][0]
+        elif tag == fsgt.DIFFUSIVEFLUX_X2:
+            F_d = self.diffusiveFlux(num_params, replace_params_before_deriv)
+            return F_d[1][0]
+        elif tag == fsgt.DIFFUSIVEFLUX_X3:
+            F_d = self.diffusiveFlux(num_params, replace_params_before_deriv)
+            return F_d[2][0]
+        elif tag == fsgt.DIFFUSIVEFLUX_X4:
+            F_d = self.diffusiveFlux(num_params, replace_params_before_deriv)
+            return F_d[3][0]
+        elif tag == fsgt.DIFFUSIVEFLUX_Y1:
+            F_d = self.diffusiveFlux(num_params, replace_params_before_deriv)
+            return F_d[0][1]
+        elif tag == fsgt.DIFFUSIVEFLUX_Y2:
+            F_d = self.diffusiveFlux(num_params, replace_params_before_deriv)
+            return F_d[1][1]
+        elif tag == fsgt.DIFFUSIVEFLUX_Y3:
+            F_d = self.diffusiveFlux(num_params, replace_params_before_deriv)
+            return F_d[2][1]
+        elif tag == fsgt.DIFFUSIVEFLUX_Y4:
+            F_d = self.diffusiveFlux(num_params, replace_params_before_deriv)
+            return F_d[3][1]
         else:
             raise ValueError("The gradient variable tag is unknown.")
 

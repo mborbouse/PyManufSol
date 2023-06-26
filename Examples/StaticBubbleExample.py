@@ -1,3 +1,4 @@
+import os
 import sympy as sp
 from PhysicalModels.ThermoPhysicalModels.EOS_factory import StiffenedGasEOS
 from PhysicalModels.ThermoPhysicalModels.TransportProperties_factory import ConstantFluidTransportProperty
@@ -12,6 +13,10 @@ from BoundaryConditions.GeneralBoundaryConditions import GeneralBoundaryConditio
 from Common.MMSTags import CoordinatesSystemType, OutputFileType
 from ProblemSolving.GeneralProblemHandler import GeneralProblemHandler, QuantityInfoForPlot
 from Outputs.PlotOverArea import *
+
+current_directory = os.getcwd()
+output_folder_name = "Examples/StaticBubbleOutput/"
+output_absolute_path = os.path.join(current_directory,output_folder_name)
 
 #* -------------------------------------------------------------------------- *#
 #* --- 0/ DEFINITION OF PROBLEM PARAMETERS ---
@@ -374,7 +379,7 @@ print([sp.simplify(i) for i in new_normal])
 #* --- 6/ OUTPUTS PRINTING AND PLOTS ---
 #* -------------------------------------------------------------------------- *#
 # Print in files
-output_path = "/Users/henneauxd/Softwares/myMMS_Solver/Examples/StaticBubbleOutput/"
+output_path = output_absolute_path
 my_new_problem.printMMSSourceTermInFile(output_path, OutputFileType.TEXT)
 my_new_problem.printSolutionVectorInFile([], CompressibleFlowVarSetTags.PRIMITIVE_PVT, output_path)
 

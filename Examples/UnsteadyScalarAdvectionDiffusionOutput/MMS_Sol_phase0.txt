@@ -1,1 +1,1 @@
-(4.0*sqrt(2)/pi - 4.0/(pi*cos(pi*t/4)))*sin(pi*x/4) + 4.0/pi - 2.0*sqrt(2)/(pi*cos(pi*t/4))
+(4.0*sqrt(2)/pi-4.0/(pi*cos(pi*t/4)))*sin(pi*x/4)+4.0/pi-2.0*sqrt(2)/(pi*cos(pi*t/4))

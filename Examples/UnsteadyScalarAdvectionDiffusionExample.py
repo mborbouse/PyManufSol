@@ -1,4 +1,4 @@
-import sympy as sp
+import os
 from PhysicalModels.ThermoPhysicalModels.EOS_factory import StiffenedGasEOS
 from PhysicalModels.ThermoPhysicalModels.TransportProperties_factory import ConstantFluidTransportProperty
 from PhysicalModels.LinearAdvectionDiffusionModels import LinearScalarAdvectionDiffusionModels
@@ -12,6 +12,11 @@ from BoundaryConditions.GeneralBoundaryConditions import GeneralBoundaryConditio
 from Common.MMSTags import CoordinatesSystemType, OutputFileType, DefaultVarSetTags
 from ProblemSolving.GeneralProblemHandler import GeneralProblemHandler, QuantityInfoForPlot
 from Outputs.PlotOverArea import *
+import sympy as sp
+
+current_directory = os.getcwd()
+output_folder_name = "UnsteadyScalarAdvectionDiffusionOutput/"
+output_absolute_path = os.path.join(current_directory,output_folder_name)
 
 #* -------------------------------------------------------------------------- *#
 #* --- 0/ DEFINITION OF PROBLEM PARAMETERS ---
@@ -140,7 +145,7 @@ for i in my_problem.getThisPhysicalModel(name_model_1).getSolVectorFromTags([],[
 #* -------------------------------------------------------------------------- *#
 
 # Print in files
-output_path = "/Users/henneauxd/Softwares/myMMS_Solver/Examples/UnsteadyScalarAdvectionDiffusionOutput/"
+output_path = output_absolute_path
 my_problem.printMMSSourceTermInFile(output_path, OutputFileType.TEXT, False, True)
 my_problem.printSolutionVectorInFile([], DefaultVarSetTags.MYVARSETTAG, output_path)
 

@@ -1,3 +1,8 @@
+import os
+from pathlib import Path
+import sys
+path_root = Path(__file__).parents[1]
+sys.path.append(str(path_root))
 import sympy as sp
 from PhysicalModels.ThermoPhysicalModels.EOS_factory import StiffenedGasEOS
 from PhysicalModels.ThermoPhysicalModels.TransportProperties_factory import ConstantFluidTransportProperty
@@ -13,6 +18,9 @@ from Common.MMSTags import CoordinatesSystemType, OutputFileType
 from ProblemSolving.GeneralProblemHandler import GeneralProblemHandler, QuantityInfoForPlot
 from Outputs.PlotOverArea import *
 
+current_directory = os.getcwd()
+output_folder_name = "Examples/SpinningBubbleWithEvaporationOutput/"
+output_absolute_path = os.path.join(current_directory,output_folder_name)
 
 #* -------------------------------------------------------------------------- *#
 #* --- 0/ DEFINITION OF PROBLEM PARAMETERS ---
@@ -434,17 +442,20 @@ print([sp.simplify(i) for i in new_normal])
 #* --- 6/ OUTPUTS PRINTING AND PLOTS ---
 #* -------------------------------------------------------------------------- *#
 # Print in files
-output_path = "/Users/henneauxd/Softwares/myMMS_Solver/Examples/SpinningBubbleWithEvaporationOutput/"
+output_path = output_absolute_path
 my_new_problem.printMMSSourceTermInFile(output_path, OutputFileType.TEXT)
 my_new_problem.printSolutionVectorInFile([], CompressibleFlowVarSetTags.PRIMITIVE_PVT, output_path, OutputFileType.TEXT)
 
-solTags = ['P', 'u', 'v', 'T', 'rho', 'rhou', 'rhov', 'rhoE']
-gradTags = ['tau_xx', 'q_x', 'q_y', 'vorticity']
-
 tags_var_to_print = [FluidSolutionTags.PRESSURE, FluidSolutionTags.VELOCITY_X, FluidSolutionTags.VELOCITY_Y, FluidSolutionTags.TEMPERATURE,
                      FluidSolutionTags.DENSITY, FluidSolutionTags.MOMENTUM_X, FluidSolutionTags.MOMENTUM_Y, FluidSolutionTags.RHOTOTALENERGY,
-                     FluidSolutionGradientTags.SHEARSTRESS_XX, FluidSolutionGradientTags.SHEARSTRESS_XY, 
+                     FluidSolutionGradientTags.SHEARSTRESS_XX, FluidSolutionGradientTags.SHEARSTRESS_XY, FluidSolutionGradientTags.SHEARSTRESS_YY,
                      FluidSolutionGradientTags.HEATFLUX_X, FluidSolutionGradientTags.HEATFLUX_Y, FluidSolutionGradientTags.VORTICITY]
+
+# tags_var_to_print = [FluidSolutionTags.CONVECTIVEFLUX_X1, FluidSolutionTags.CONVECTIVEFLUX_X2, FluidSolutionTags.CONVECTIVEFLUX_X3, FluidSolutionTags.CONVECTIVEFLUX_X4,
+#                      FluidSolutionTags.CONVECTIVEFLUX_Y1, FluidSolutionTags.CONVECTIVEFLUX_Y2, FluidSolutionTags.CONVECTIVEFLUX_Y3, FluidSolutionTags.CONVECTIVEFLUX_Y4,
+#                      FluidSolutionGradientTags.DIFFUSIVEFLUX_X1, FluidSolutionGradientTags.DIFFUSIVEFLUX_X2, FluidSolutionGradientTags.DIFFUSIVEFLUX_X3, FluidSolutionGradientTags.DIFFUSIVEFLUX_X4,
+#                      FluidSolutionGradientTags.DIFFUSIVEFLUX_Y1, FluidSolutionGradientTags.DIFFUSIVEFLUX_Y2, FluidSolutionGradientTags.DIFFUSIVEFLUX_Y3, FluidSolutionGradientTags.DIFFUSIVEFLUX_Y4]
+
 my_new_problem.printAnyFieldDataInFile(tags_var_to_print, output_path, OutputFileType.TEXT)
 
 # Area over which to plot
@@ -471,6 +482,9 @@ for i in range(nb_lines_plot):
 #     lines_plot.append(BoundaryGeometryFromEquation(new_sym_variables, [0.0, 1.0, coords_plot[i]], "plot_line_"+str(i)))
 
 # Quantities to plot
+Fcx4_plot = QuantityInfoForPlot(FluidSolutionTags.CONVECTIVEFLUX_X4)
+Fcy4_plot = QuantityInfoForPlot(FluidSolutionTags.CONVECTIVEFLUX_Y4)
+rhoE_plot = QuantityInfoForPlot(FluidSolutionTags.RHOTOTALENERGY)
 u_plot = QuantityInfoForPlot(FluidSolutionTags.VELOCITY_X)
 v_plot = QuantityInfoForPlot(FluidSolutionTags.VELOCITY_Y)
 vel_plot = QuantityInfoForPlot(FluidSolutionTags.VELOCITY_VEC, False, ProjectionType.NOPROJECTION, None, True)

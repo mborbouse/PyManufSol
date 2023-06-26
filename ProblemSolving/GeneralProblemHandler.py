@@ -98,7 +98,7 @@ class GeneralProblemHandler:
             for i in range(len(src)):
                 if simplify and isinstance(src[i], sp.Expr):
                     src[i] = sp.simplify(src[i])
-                s_str = str(src[i]).replace("**","^")
+                s_str = str(src[i]).replace("**","^").replace(" ","")
                 writeOneLineInFile(file, s_str, fileType)
                 if printOnScreen:
                     print("Source(%d):  %s"%(i, s_str))
@@ -115,7 +115,7 @@ class GeneralProblemHandler:
             for i in range(len(sol_vec)):
                 if simplify and isinstance(sol_vec[i], sp.Expr):
                     sol_vec[i] = sp.simplify(sol_vec[i])
-                s_str = str(sol_vec[i]).replace("**","^")
+                s_str = str(sol_vec[i]).replace("**","^").replace(" ","")
                 writeOneLineInFile(file, s_str, fileType)
                 if printOnScreen:
                     print("Solution(%d):  %s"%(i, s_str))
@@ -142,7 +142,7 @@ class GeneralProblemHandler:
                 for i in range(len(sol_vec)):
                     if simplify and isinstance(sol_vec[i], sp.Expr):
                         sol_vec[i] = sp.simplify(sol_vec[i])
-                    s_str = str(sol_vec[i]).replace("**","^")
+                    s_str = str(sol_vec[i]).replace("**","^").replace(" ","")
                     writeOneLineInFile(file, s_str, fileType)
                     if printOnScreen:
                         print("Var(%d):  %s"%(i, s_str))
