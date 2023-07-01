@@ -123,8 +123,11 @@ class PlotOver2DArea:
         norm_vec = np.sqrt(Z1_trunc**2 + Z2_trunc**2)
         Z1_trunc_norm = Z1_trunc / norm_vec
         Z2_trunc_norm = Z2_trunc / norm_vec
-        # ax.quiver(X, Y, Z1, Z2, angles='xy', scale_units='xy', units='width')
-        ax.quiver(X, Y, Z1_trunc_norm, Z2_trunc_norm, norm_vec, units='width')
+        # ax.quiver(X, Y, Z1, Z2, angles='xy', scale_units='xy', units='width', scale=1)
+        myquiver = ax.quiver(X, Y, Z1_trunc_norm, Z2_trunc_norm, norm_vec, units='width',scale=50)
+        myquiver.set_cmap('coolwarm')
+        # cbar = plt.colorbar(myquiver)
+
         plt.contour(X,Y,int_pos,levels=[0])
 
 class PlotOver2DAreaWithStraightBoundaries(PlotOver2DArea):

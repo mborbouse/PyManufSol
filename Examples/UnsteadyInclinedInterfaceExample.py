@@ -37,7 +37,7 @@ domain_dim = 2
 # Jumps conditions parameters
 m_dot = 0.0 # using m_dot != 0 leads to a non-solvable system...
 deltaTangentStress = 0.0#0.2
-deltaTangentVel = 0.0#-0.5
+deltaTangentVel = -0.1
 delta_p = -0.2
 deltaTemp = 0.5
 heatSource = 1.0
@@ -68,19 +68,19 @@ p_1 = UserDefinedManufSol(p_coeff, sym_variables, p_1_user)
 u_0_user = 0.0*sym_variables[1]+0.0#1.0*sp.cos(0.75*sp.pi*sym_variables[1]/y_dim) + 2.45
 u_0 = UserDefinedManufSol([], sym_variables, u_0_user)
 
-# u_coeff = list(sp.symbols('bU_1, bU_2'))
-# u_1_user = u_coeff[0]*sp.cos(5*sp.pi*sym_variables[1]/(4*y_dim)) + u_coeff[1] + 0.0
-# u_1 = UserDefinedManufSol(u_coeff, sym_variables, u_1_user)
-u_coeff = [sp.symbols('bU_1')]
-u_1_user = 0.0*u_coeff[0]*sp.cos(5*sp.pi*sym_variables[1]/(4*y_dim)) + u_coeff[0] + 0.0
+u_coeff = list(sp.symbols('bU_1, bU_2'))
+u_1_user = u_coeff[0]*sp.cos(5*sp.pi*sym_variables[1]/(4*y_dim)) + u_coeff[1] + 0.0
 u_1 = UserDefinedManufSol(u_coeff, sym_variables, u_1_user)
+# u_coeff = [sp.symbols('bU_1')]
+# u_1_user = 0.0*u_coeff[0]*sp.cos(5*sp.pi*sym_variables[1]/(4*y_dim)) + u_coeff[0] + 0.0
+# u_1 = UserDefinedManufSol(u_coeff, sym_variables, u_1_user)
 
 # Vertical velocities
 v_0_user = 0.0*sym_variables[1]+1.0#1.0*sp.cos(0.75*sp.pi*sym_variables[1]/y_dim) + 2.45
 v_0 = UserDefinedManufSol([], sym_variables, v_0_user)
 
 v_coeff = list(sp.symbols('bV_1, bV_2'))
-v_1_user = v_coeff[0]*sp.cos(5*sp.pi*sym_variables[1]/(4*y_dim)) + v_coeff[1] + 2.25
+v_1_user = v_coeff[0]*sp.cos(5*sp.pi*sym_variables[1]/(4*y_dim)) + v_coeff[1] + 0.0
 v_1 = UserDefinedManufSol(v_coeff, sym_variables, v_1_user)
 
 # Assembly into dict
@@ -173,7 +173,7 @@ iso0_jump.addNeumannBCAndSubsituteBoundaryEq(FluidSolutionGradientTags.SHEARSTRE
 
 # - Tangential shear stress
 jump_tau_nt = -m_dot * deltaTangentVel + deltaTangentStress
-# iso0_jump.addNeumannBCAndSubsituteBoundaryEq(FluidSolutionGradientTags.SHEARSTRESS, [-jump_tau_nt], coord_to_subsituted, ProjectionType.NORMALTANGENT)
+iso0_jump.addNeumannBCAndSubsituteBoundaryEq(FluidSolutionGradientTags.SHEARSTRESS, [-jump_tau_nt], coord_to_subsituted, ProjectionType.NORMALTANGENT)
 
 # - Heat flux minus viscous dissipation
 E_0 = eqs_0.getSolTag(FluidSolutionTags.TOTALENERGY)
@@ -313,7 +313,7 @@ for time_plot in time_plot_vec:
     # quantities_plot = [u_plot, v_plot, vel_n_plot, vel_t_plot, T_plot, p_plot, rho_plot, tau_nn_plot, tau_nt_plot, q_n_plot, q_minus_tauu_n_plot]
 
     # quantities_plot = [u_plot, v_plot, vel_n_plot, vel_t_plot]#, T_plot, p_plot, rho_plot, tau_nn_plot, tau_nt_plot]
-    quantities_plot = [tau_nt_plot]#[vel_n_plot, vel_t_plot, u_plot, v_plot]#
+    quantities_plot = [p_plot]#[vel_n_plot, vel_t_plot, u_plot, v_plot]#
 
     # Sides of interface
     side_interface_plot = dict()

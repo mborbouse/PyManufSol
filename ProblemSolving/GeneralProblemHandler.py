@@ -249,6 +249,7 @@ class GeneralProblemHandler:
             axes.set_xlabel(str(sym_var[0]), size = 26)
             axes.set_ylabel(str(sym_var[1]), size = 26)
             # axes.set_zlabel('', size = 26)
+            # axes.set_zlim(0.5,1.35)
 
             plt.xticks(fontsize=16)
             plt.yticks(fontsize=16)
