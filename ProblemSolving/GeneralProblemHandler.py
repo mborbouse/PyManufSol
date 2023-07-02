@@ -35,7 +35,7 @@ class QuantityInfoForPlot:
 
 class GeneralProblemHandler:
 
-    def __init__(self, physical_models: list[GeneralPhysicalModels], conditions: Optional[list[GeneralBoundaryConditions]] = None):
+    def __init__(self, physical_models: list[GeneralPhysicalModels], conditions: Optional[list[GeneralBoundaryConditions]] = None, solver_manual = True, solver_implicit = True):
         self.physical_models = dict()
         for mod in physical_models:
             tag_mod = mod.getPhysicalModelTag()
@@ -54,7 +54,7 @@ class GeneralProblemHandler:
                     self.conditions[tag_cond] = cond
             if any(c.getNumberImposedConditions() > 0 for c in conditions): 
                 params_solver = GeneralParametersSolver(physical_models)
-                self.params_sol = params_solver.solveForManufSolParameters(conditions)
+                self.params_sol = params_solver.solveForManufSolParameters(conditions, True, False, None, solver_manual, solver_implicit)
     
     def getParametricSolCoeff(self) -> dict:
         return self.params_sol

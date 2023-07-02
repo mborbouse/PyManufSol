@@ -56,7 +56,7 @@ class GeneralParametersSolver:
         else:
             # x_0 =  [-202.267776549951, -202.267776549951, -236.507447722715, 1185.70815302973, -1125.26576706481, -465.092344600401, 2422.26911011591, -2347.00853098756, 4197.85903310401, -12165.1201722485, 12951.5747070123]
             # param_sol_final = nsolve(conditions, tuple(unknown_params), x_0)
-            param_sol_final = solve(conditions, tuple(unknown_params), simplify = mySimplify, rational = None, warn = True, manual = myManual, implicit = myImplicit)
+            param_sol_final = solve(conditions, tuple(unknown_params), simplify = mySimplify, rational = myRational, warn = True, manual = myManual, implicit = myImplicit)
             bool_dict = type(param_sol_final) is dict
             if bool_dict == False:
                 param_sol_final = param_sol_final[0]
