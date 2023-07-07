@@ -327,6 +327,8 @@ for time_plot in time_plot_vec:
     side_interface_plot[name_model_0] = -1
     side_interface_plot[name_model_1] = 1
 
+    my_new_problem.evaluateJumpAtInterface(quantities_plot, side_interface_plot, iso0_plot_geo, [new_sym_variables[0]], [0.5], sym_variables[-1], time_plot)
+
     # Plot everything
     # my_problem.plotQuantitiesAlongOneDimLinesOverThisArea(quantities_plot, lines_plot_original, plot_area_cart_original, side_interface_plot, 20, 1)
 

@@ -148,6 +148,58 @@ class GeneralProblemHandler:
                         print("Var(%d):  %s"%(i, s_str))
             closeFile(file)
 
+    def evaluateJumpAtInterface(self, quantities: list[QuantityInfoForPlot], sideInterfaces: dict(), iso0_geo: GeneralBoundaryGeometry, fixed_coord: list[sp.Expr], val_fixed_coord: list[float], time_coord: sp.Expr, val_time_coord: float):
+        num_params = self.getParametricSolCoeff()
+        first_physical_model = list(self.physical_models.values())[0]
+        sym_var = first_physical_model.getSpatialSymVar()
+        iso0_eq = iso0_geo.getBoundaryEquation()
+        iso0_eq_subs = iso0_eq
+        iso0_eq_subs = iso0_eq_subs.subs({time_coord:val_time_coord})
+        spatial_coord = dict()
+        spatial_coord_val = []
+        for i,j in zip(fixed_coord,val_fixed_coord):
+            iso0_eq_subs = iso0_eq_subs.subs({i:j})
+            spatial_coord[i] = j
+            spatial_coord_val.append(j)
+        freeCoord = [i for i in sym_var if i not in fixed_coord]
+        freeCoord = freeCoord[0]
+        freeCoordValue = sp.solve(iso0_eq_subs, freeCoord)
+        spatial_coord[freeCoord] = freeCoordValue[0]
+        spatial_coord_val.append(freeCoordValue[0])
+        
+        if len(freeCoordValue) != 0:
+            val = iso0_eq.subs(freeCoord, freeCoordValue[0])
+        else:
+            val = iso0_eq
+        if isinstance(val_fixed_coord, list):
+            for j in range(len(fixed_coord)):
+                val = val.subs(fixed_coord[j], val_fixed_coord[j])
+
+        for q in quantities:
+            tag = q.getQuantityTag()
+            name_plot = str(tag.name)
+            proj = q.getProjectionType()
+            if proj != ProjectionType.NOPROJECTION:
+                name_plot = name_plot + " " + str(proj.name)
+            jump = 0
+            for side, side_value in sideInterfaces.items():
+                sol = 0.0
+                if isinstance(tag, SolutionTags):
+                    if not q.isDerivQuantity():
+                        sol = self.physical_models[side].getSolTag(tag, num_params)
+                    else:
+                        sol = self.physical_models[side].getGradSolTag(tag, sym_var, num_params, True)
+                elif isinstance(tag, SolutionGradientTags):
+                    sol = self.physical_models[side].getGradVarTag(tag, num_params, True)
+                if isinstance(q.getEvalAtTime(), float) and len(self.physical_models[side].getTemporalSymVar()) > 0:
+                    sol = subsNumParamsBis(sol, [self.physical_models[side].getTemporalSymVar()[0]], [q.getEvalAtTime()])
+                
+                sol_proj = projectBoundaryVarAlongDir(sol, iso0_geo, proj)
+                sol_proj = sol_proj.subs(spatial_coord)
+                jump -= sol_proj*side_value
+
+            print(">>> Jump on %s at (%2.3f,%2.3f) on iso0 at time %2.3f: %2.12f"%(name_plot,spatial_coord_val[0],spatial_coord_val[1],val_time_coord,jump))
+
     # Plotting
     def plotQuantitiesAlongOneDimLinesOverThisArea(self, quantities: list[QuantityInfoForPlot], line_plot: list[GeneralBoundaryGeometry], area: PlotOver2DArea, sideInterfaces: dict(), nb_pts: int, sampleDir: int):
         line_type = ['-', '--', '-.', ':']
