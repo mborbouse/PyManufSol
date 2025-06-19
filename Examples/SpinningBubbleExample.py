@@ -1,5 +1,11 @@
 import os
 import sympy as sp
+import sys
+
+script_path = os.path.dirname(os.path.realpath(__file__))
+project_path = script_path+"/../."
+sys.path.insert(0, project_path)
+
 from PhysicalModels.ThermoPhysicalModels.EOS_factory import StiffenedGasEOS
 from PhysicalModels.ThermoPhysicalModels.TransportProperties_factory import ConstantFluidTransportProperty
 from PhysicalModels.CompressibleNavierStokesModels import CompressibleNavierStokesModels
